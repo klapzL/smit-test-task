@@ -6,19 +6,19 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DB_USER: ${USER}
-      DB_PASSWORD: ${PASSWORD}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME}
-      DB_HOST: ${HOST}
-      DB_PORT: ${PORT}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
     depends_on:
       - db
 
   db:
     image: postgres:latest
     environment:
-      POSTGRES_USER: ${USER}
-      POSTGRES_PASSWORD: ${PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "${PORT}:${PORT}"
+      - "${DB_PORT}:${DB_PORT}"
