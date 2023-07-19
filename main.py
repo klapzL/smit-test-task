@@ -52,7 +52,11 @@ async def create_tariff(cargo_type: str, rate: float):
 
 
 @app.get('/calculate_insurance/')
-async def calculate_insurance_cost(cargo_type: str, cost: float, date: str):
+async def calculate_insurance_cost(
+                    cargo_type: str,
+                    cost: float,
+                    date: str = datetime.now().strftime('%Y-%m-%d')
+                ):
     try:
         date = datetime.strptime(date, '%Y-%m-%d')
     except ValueError:
