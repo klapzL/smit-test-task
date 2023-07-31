@@ -1,32 +1,14 @@
-import os
-
 from datetime import datetime
-from dotenv import load_dotenv
 
-from tortoise import Tortoise
-from fastapi import FastAPI, HTTPException
+from fastapi import APIRouter, HTTPException
 
 from app.models import Tariff, tariff_pydantic
 from app.utils import get_tariff
 
 
-app = FastAPI()
+router = APIRouter()
 
-load_dotenv()
-
-db_url = os.getenv('DB_URL')
-
-
-@app.on_event('startup')
-async def init():
-    await Tortoise.init(
-        db_url=db_url,
-        modules={'models': ['app.models']}
-    )
-    await Tortoise.generate_schemas()
-
-
-@app.get('/tariffs')
+@router.get('/tariffs')
 async def get_tariffs():
     tariffs = await Tariff.all()
     tariffs_date = {}
@@ -41,7 +23,7 @@ async def get_tariffs():
     return tariffs_date
 
 
-@app.post('/tariffs/create')
+@router.post('/tariffs/create')
 async def create_tariff(cargo_type: str, rate: float):
     tariff = await Tariff.create(
         cargo_type=cargo_type,
@@ -51,7 +33,7 @@ async def create_tariff(cargo_type: str, rate: float):
     return await tariff_pydantic.from_tortoise_orm(tariff)
 
 
-@app.get('/calculate_insurance/')
+@router.get('/calculate_insurance/')
 async def calculate_insurance_cost(cargo_type: str, cost: float, date: str):
     try:
         date = datetime.strptime(date, '%Y-%m-%d')
